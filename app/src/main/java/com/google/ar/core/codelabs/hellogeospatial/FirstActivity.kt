@@ -32,10 +32,10 @@ class FirstActivity : AppCompatActivity() {
             longitudeAdd.setText("")
             latitudeAdd.setText("")
             val target = Target(namevaVal.toString(), latitudeVal, longitudeVal)
-            onAdd(target)
+            TargetPlaces.onAdd(this,target)
         }
         val rv: RecyclerView = findViewById(R.id.rv)
-        val adapter = TargetAdapter({ t -> navigateToMain(t) }, { t -> onDelete(t) })
+        val adapter = TargetAdapter({ t -> navigateToMain(t) }, { t -> TargetPlaces.onDelete(this,t) }, { t,f -> TargetPlaces.onUpdate(this,t,f) })
         rv.adapter = adapter
         GlobalScope.launch(Dispatchers.IO) {
             TargetDatabase.getInstance(this@FirstActivity).targetDao().getAllTargetsAsFlow()
@@ -45,18 +45,6 @@ class FirstActivity : AppCompatActivity() {
                 }
         }
 
-    }
-
-    private fun onDelete(t: Target) {
-        GlobalScope.launch(Dispatchers.IO) {
-            TargetDatabase.getInstance(this@FirstActivity).targetDao().delete(t)
-        }
-    }
-
-    private fun onAdd(t: Target) {
-        GlobalScope.launch(Dispatchers.IO) {
-            TargetDatabase.getInstance(this@FirstActivity).targetDao().insert(t)
-        }
     }
 
     private fun navigateToMain(target: Target) {

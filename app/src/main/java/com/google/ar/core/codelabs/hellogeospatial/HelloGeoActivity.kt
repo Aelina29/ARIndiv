@@ -24,6 +24,7 @@ import com.google.ar.core.Config
 import com.google.ar.core.Session
 import com.google.ar.core.codelabs.hellogeospatial.helpers.ARCoreSessionLifecycleHelper
 import com.google.ar.core.codelabs.hellogeospatial.helpers.GeoPermissionsHelper
+import com.google.ar.core.codelabs.hellogeospatial.helpers.HandlerHelper
 import com.google.ar.core.codelabs.hellogeospatial.helpers.HelloGeoView
 import com.google.ar.core.codelabs.hellogeospatial.helpers.TargetDatabase
 import com.google.ar.core.examples.java.common.helpers.FullScreenHelper
@@ -82,6 +83,8 @@ class HelloGeoActivity : AppCompatActivity() {
         view = HelloGeoView(this)
         lifecycle.addObserver(view)
         setContentView(view.root)
+
+        view.cafeName.text = currentTarget.toString()
 
         // Sets up an example renderer using our HelloGeoRenderer.
         SampleRender(view.surfaceView, renderer, assets)

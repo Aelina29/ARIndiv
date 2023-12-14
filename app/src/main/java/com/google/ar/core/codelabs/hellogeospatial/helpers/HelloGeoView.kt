@@ -41,6 +41,8 @@ class HelloGeoView(val activity: HelloGeoActivity) : DefaultLifecycleObserver {
     val compass = root.findViewById<ImageView>(R.id.compass)
 
     val backButton = root.findViewById<Button>(R.id.backButton)
+    val cafeName = root.findViewById<TextView>(R.id.cafename)
+    val cafeDistance = root.findViewById<TextView>(R.id.cafedistance)
 
   val session
     get() = activity.arCoreSessionHelper.session

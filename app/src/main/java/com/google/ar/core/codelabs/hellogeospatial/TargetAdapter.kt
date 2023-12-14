@@ -4,10 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class TargetAdapter(val onclick:(target:Target)->Unit, val onDelete:(target:Target)->Unit) :
+class TargetAdapter(val onclick:(target:Target)->Unit, val onDelete:(target:Target)->Unit, val onVisited:(target:Target,flag:Boolean)->Unit) :
     RecyclerView.Adapter<TargetAdapter.TargetViewHolder>() {
      var list: ArrayList<Target> = arrayListOf()
         set(value) {
@@ -29,6 +30,10 @@ class TargetAdapter(val onclick:(target:Target)->Unit, val onDelete:(target:Targ
         holder.buttonDelete.setOnClickListener {
             onDelete(target)
         }
+        holder.visited.setOnClickListener {
+            onVisited(target,holder.visited.isChecked)
+        }
+        holder.visited.isChecked = target.isReached
     }
 
     override fun getItemCount() = list.size
@@ -36,6 +41,7 @@ class TargetAdapter(val onclick:(target:Target)->Unit, val onDelete:(target:Targ
     class TargetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textViewTarget: TextView = itemView.findViewById(R.id.textViewTarget)
         val buttonDelete: Button = itemView.findViewById(R.id.buttonDelete)
+        val visited: CheckBox = itemView.findViewById(R.id.visited)
     }
 
 }

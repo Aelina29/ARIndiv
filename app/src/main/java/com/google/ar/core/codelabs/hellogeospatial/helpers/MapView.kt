@@ -21,6 +21,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.LightingColorFilter
 import android.graphics.Paint
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.annotation.ColorInt
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -42,7 +44,7 @@ class MapView(val activity: HelloGeoActivity, val googleMap: GoogleMap) {
   var cameraIdle = true
 
 //  val earthMarker = createMarker(EARTH_MARKER_COLOR)
-  val earthMarker = mutableListOf<Marker>(createMarker(EARTH_MARKER_COLOR))
+  val earthMarker = mutableListOf<Marker>(createCafeMarker())
 
   init {
     googleMap.uiSettings.apply {
@@ -100,11 +102,36 @@ class MapView(val activity: HelloGeoActivity, val googleMap: GoogleMap) {
     return googleMap.addMarker(markersOptions)!!
   }
 
+  fun drawableToBitmap(drawable: Drawable): Bitmap {
+    if (drawable is BitmapDrawable) {
+      return drawable.bitmap
+    }
+    val bitmap =
+      Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    drawable.setBounds(0, 0, canvas.width, canvas.height)
+    drawable.draw(canvas)
+    return bitmap
+  }
+
+  private fun createCafeMarker(): Marker {
+    val icon = drawableToBitmap(activity.resources.getDrawable(R.drawable.cafe))
+    val markersOptions = MarkerOptions()
+      .position(LatLng(0.0,0.0))
+      .draggable(false)
+      .anchor(0.5f, 0.5f)
+      .flat(true)
+      .visible(false)
+      .icon(BitmapDescriptorFactory.fromBitmap(icon))
+    return googleMap.addMarker(markersOptions)!!
+  }
+
   private fun createColoredMarkerBitmap(@ColorInt color: Int): Bitmap {
     val opt = BitmapFactory.Options()
     opt.inMutable = true
     val navigationIcon =
       BitmapFactory.decodeResource(activity.resources, R.drawable.ic_navigation_white_48dp, opt)
+//    BitmapFactory.decodeResource(activity.resources, R.drawable.local_cafe_24px, opt)
     val p = Paint()
     p.colorFilter = LightingColorFilter(color,  /* add= */1)
     val canvas = Canvas(navigationIcon)
@@ -113,7 +140,7 @@ class MapView(val activity: HelloGeoActivity, val googleMap: GoogleMap) {
   }
 
   fun addMarker(position_: LatLng, isVisible_: Boolean) {
-    val marker = createMarker(EARTH_MARKER_COLOR)
+    val marker = createCafeMarker()
     marker.apply {
       position = position_
       isVisible = isVisible_

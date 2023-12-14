@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.ar.core.Anchor
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
+import com.google.ar.core.codelabs.hellogeospatial.helpers.HandlerHelper
 import com.google.ar.core.examples.java.common.helpers.DisplayRotationHelper
 import com.google.ar.core.examples.java.common.helpers.TrackingStateHelper
 import com.google.ar.core.examples.java.common.samplerender.Framebuffer
@@ -40,6 +41,10 @@ import kotlin.math.sqrt
 class HelloGeoRenderer(val activity: HelloGeoActivity) :
   SampleRender.Renderer, DefaultLifecycleObserver {
   data class AnchorModel(val anchor: Anchor,val name:String,val lat: Double, val lng: Double)
+
+//  val handH : HandlerHelper = HandlerHelper {  }
+
+  private var flag = 0
 
   private val MAX_HERE_DISTANCE = 10
   private val earthAnchors = mutableListOf<AnchorModel>()
@@ -211,11 +216,16 @@ var isHere=false
         render.renderCompassAtAnchor(earthAnchor.anchor)
       }
       if (activity.currentTarget==earthAnchor.name) {
-        activity.runOnUiThread {
-          activity.view.setCompassArrow(LatLng(earthAnchor.lat, earthAnchor.lng))
+        flag += 1
+        if(flag%100 == 0){
+          activity.runOnUiThread {
+            activity.view.cafeDistance.text = "${distance.toInt()} m"
+            activity.view.setCompassArrow(LatLng(earthAnchor.lat, earthAnchor.lng))
+          }
         }
         if (!isHere && distance <= MAX_HERE_DISTANCE){
           isHere = true
+          TargetPlaces.onUpdate(activity, TargetPlaces.targets.first { it.name == activity.currentTarget }, true)
           activity.runOnUiThread {
             Toast.makeText(activity,"Вы пришли",Toast.LENGTH_LONG).show()
           }
